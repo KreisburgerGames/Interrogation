@@ -8,11 +8,12 @@ import sys
 from datetime import datetime
 import pytz
 import random
-
+db["queue"] = []
+db["queuefinish"] = False
 tz = pytz.timezone('America/New_York')
 
 t = db # Gets rid of the green underline on line 16
-database_url = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE2NDU2NDYzMDgsImlhdCI6MTY0NTUzNDcwOCwiZGF0YWJhc2VfaWQiOiJiZGJhY2Q3OC1hYjZlLTQ1ZWYtYTdiZS0zYTBlZGY3YWJmMzgifQ.ExFVRUCQ0SoQuTPlRYXUOHpjwC0yRdtqJ-I3BHAEgh25DupsdiAgmZHhm3SmZ5JmVX6PoHWGrvoXOF8dvG7fHQ"
+database_url = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE2NDU4MjIwNjUsImlhdCI6MTY0NTcxMDQ2NSwiZGF0YWJhc2VfaWQiOiJiZGJhY2Q3OC1hYjZlLTQ1ZWYtYTdiZS0zYTBlZGY3YWJmMzgifQ.iOMFTmGHqVsfKetsVeykAQJz6BcBooa1qmWw2o8zpw_2lNTA9Q0mZUC_SsRKUkNrp11mUOckD5sLzZ12LddsEg"
 db = Database(db_url=database_url)
 
 updateurl = False
@@ -430,7 +431,7 @@ while True:
                                   else:
                                     clear()
                                     pwinscreen = i
-                                    print("Are you sure you would like to buy this win screen?\n" + i + "\n\n[y] Yes\n[n] No")
+                                    print("Are you sure you would like to buy this win screen?\n" + pwinscreen + "\n\n[y] Yes\n[n] No")
                                     i = input("")
                                     if i == "n":
                                       pass
@@ -459,7 +460,7 @@ while True:
                                   else:
                                     clear()
                                     pwinscreen = i
-                                    print("Are you sure you would like to buy this loss screen?\n" + i + "\n\n[y] Yes\n[n] No")
+                                    print("Are you sure you would like to buy this loss screen?\n" + pwinscreen + "\n\n[y] Yes\n[n] No")
                                     i = input("")
                                     if i == "n":
                                       pass
@@ -494,10 +495,10 @@ while True:
                                       color = Fore.RED
                                     elif i == "2":
                                       color = Fore.GREEN
-                                    elif i == "1":
+                                    elif i == "3":
                                       color = Fore.CYAN
                                     clear()
-                                    print("Are you sure you would like to buy this title?\n" + color + i + reset + "\n\n[y] Yes\n[n] No")
+                                    print("Are you sure you would like to buy this title?\n" + color + pwinscreen + reset + "\n\n[y] Yes\n[n] No")
                                     i = input("")
                                     if i == "n":
                                       pass
@@ -510,7 +511,7 @@ while True:
                                       sleep(2)
                             elif i == "5":
                               clear()
-                              print("There is a 1 in 3 chance to double however many coins you bet, put in your bet or type -1 to go back")
+                              print("There is a 1 in 3 chance to double however many coins you bet, put in your bet or type -1 to go back\n" + Fore.LIGHTYELLOW_EX + str(db[username + "coins"]) + reset + "coins")
                               i = int(input())
                               if i == -1:
                                 pass
@@ -597,7 +598,7 @@ while True:
                               elif i == 0:
                                 db[username + "title"] = ""
                               else:
-                                db[username + "title"] = db[username + "titles"][i]
+                                db[username + "title"] = db[username + "titles"][i - 1]
                         elif i == "?":
                           clear()
                           print("How to play: Player 1 asks player 2 a quiz question (not like personal ex: who do you like) If player 2 gets it wrong, they are at risk, player 2 asks player 1 a question, if they get it right, the game continues, but if player 2 was at risk, player 1 wins. Both players get it wrong? game continues. Player 1 gets it wrong without player 2 being at risk? Player 2 wins.\n\n[-1] Back")
@@ -953,24 +954,295 @@ while True:
                             for a in db[username + "friends"]:
                                 print("[" + str(count) + "] " + db[a + "namecolor"] + a + reset)
                                 count = count + 1
-                            typePrint("[-1] Back\n", mts)
+                            typePrint("[-1] Back\n[-2] Random opponent (BETA)\n", mts)
                             i = int(input())
                             if i == -1:
                                 break
-                            fname = db[username + "friends"][i]
-                            canplay = False
-                            for user in db[fname + "friends"]:
-                              if username == user:
-                                canplay = True
-                            for user in db[fname + "blockedusers"]:
-                              if username == user:
-                                canplay = False
-                            if not canplay == True:
-                              clear()
-                              typePrint(red + "This person does not have you added" + reset, mts)
-                              sleep(2)
-                              break
+                            elif i == -2:
+                              while True:
+                                clear()
+                                if len(db["queue"]) > 1:
+                                  clear()
+                                  typePrint("A game is starting, try again in a second")
+                                  sleep(2)
+                                  break
+                                if not db["s1iu"] == True:
+                                  server = "s1iu"
+                                elif not db["s2iu"] == True:
+                                  server = "s2iu"
+                                elif not db["s3iu"] == True:
+                                  server = "s3iu"
+                                else:
+                                  clear()
+                                  typePrint("Servers are full right now, try again later")
+                                if True:
+                                  db["queue"].append(username)
+                                  if len(db["queue"]) > 1:
+                                    while not db["queuefinish"] == True:
+                                      clear()
+                                      print("Loading")
+                                    db["queuefinish"] = False
+                                    break
+                                  else:
+                                    leave = False
+                                    while not len(db["queue"]) > 1:
+                                      print("You are in the queue, -1 to leave")
+                                      i = input("")
+                                      if i == "-1":
+                                        db["queue"].pop(0)
+                                        leave = True
+                                        break
+                                    if leave == True:
+                                      break
+                                    else:
+                                      db[db["queue"][1] + "requests"].append(username + " " + server)
+                                      away = db["queue"][1]
+                                      db["queue"] = []
+                                      db["queuefinish"] = True
+                                      while db[away +
+                                                 "play?"] == None:
+                                            clear()
+                                            print("Waiting for response.")
+                                            sleep(0.5)
+                                            clear()
+                                            print("Waiting for response..")
+                                            sleep(0.5)
+                                            clear()
+                                            print("Waiting for response...")
+                                            sleep(0.5)
+                                      if db[away +
+                                          "play?"] == True:
+                                        db[server +
+                                           "awayname"] = db[away]
+                                        db[away +
+                                           "play?"] = None
+                                        db[server + "homename"] = username
+                                        db[server + "sd"] = False
+                                        db[server + "reset"] = False
+                                        db[server] == True
+                                        db[server + "turn"] = "away"
+                                        while True:
+                                            db[server + "hq"] = None
+                                            db[server + "aq"] = None
+                                            db[server + "hready"] = True
+                                            db[server + "hr"] = None
+                                            db[server + "ar"] = None
+                                            db[server + "rw"] = None
+                                            if db[server + "turn"] == "home":
+                                                db[server + "turn"] = "away"
+                                            else:
+                                                db[server + "turn"] = "home"
+                                            db[server + "reset"] = True
+                                            while db[server +
+                                                     "aready"] == False:
+                                                clear()
+                                                print("Waiting for opponent.")
+                                                sleep(0.5)
+                                                clear()
+                                                print("Waiting for opponent..")
+                                                sleep(0.5)
+                                                clear()
+                                                print(
+                                                    "Waiting for opponent...")
+                                                sleep(0.5)
+                                            db[server + "reset"] = False
+                                            if db[server + "turn"] == "home":
+                                                clear()
+                                                typePrint("Ask your question\n", ts)
+                                                i = input("")
+                                                db[server + "hq"] = i
+                                                while db[server +
+                                                         "ar"] == None:
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent.."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent..."
+                                                    )
+                                                    sleep(0.5)
+                                                clear()
+                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"] + reset +
+                                                      " said:" + "\n" +
+                                                      db[server + "ar"], ts)
+                                                typePrint(
+                                                    "\n\n[1] Correct\n[2] Incorrect\n", ts
+                                                )
+                                                i = input("")
+                                                if i == "1":
+                                                    db[server + "sd"] = False
+                                                    clear()
+                                                    typePrint(
+                                                        "Opponent is correct", ts)
+                                                    db[username +
+                                                       "playedmatches"] += 1
+                                                    db[db[server + "awayname"]
+                                                       + "wins"] += 1
+                                                    db[db[server + "awayname"]
+                                                       + "coins"] += 1
+                                                    db[server + "sd"] = False
+                                                    db[server + "rw"] = "away"
+                                                    sleep(2)
+                                                else:
+                                                    if db[server +
+                                                          "sd"] == True:
+                                                        db[server +
+                                                           "winner"] = "home"
+                                                        db[server +
+                                                           "rw"] = "home"
+                                                        clear()
+                                                        typePrint(db[username + "winscreen"], ts)
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "playedmatches"] += 1
+                                                        db[username +
+                                                           "wins"] += 1
+                                                        db[username +
+                                                           "coins"] += 5
+                                                        sleep(2)
+                                                        break
+                                                    else:
+                                                        db[server +
+                                                           "rw"] = "home"
+                                                        clear()
+                                                        typePrint(
+                                                            green +
+                                                            "You won this round, " +
+                                                            "opponent is now at risk"
+                                                            + reset, ts)
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "playedmatches"] += 1
+                                                        db[username +
+                                                           "wins"] += 1
+                                                        sleep(2)
+                                                        db[username +
+                                                           "coins"] += 1
+                                            else:
+                                                while db[server +
+                                                         "aq"] == None:
+                                                    clear()
+                                                    print(
+                                                        "Waiting for question."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for question.."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for question..."
+                                                    )
+                                                    sleep(0.5)
+                                                clear()
+                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"]  + reset +
+                                                      " asked:\n" +
+                                                      db[server + "aq"] + "\n", ts)
+                                                typePrint("Type your answer\n", ts)
+                                                i = input("")
+                                                db[server + "hr"] = i
+                                                while db[server +
+                                                         "rw"] == None:
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent.."
+                                                    )
+                                                    sleep(0.5)
+                                                    clear()
+                                                    print(
+                                                        "Waiting for opponent..."
+                                                    )
+                                                    sleep(0.5)
+                                                if db[server + "rw"] == "home":
+                                                    clear()
+                                                    typePrint(
+                                                          "Your answer was " + green + "correct." +
+                                                          reset, ts)
+                                                    db[db[server + "awayname"]
+                                                       + "playedmatches"] += 1
+                                                    db[username + "wins"] += 1
+                                                    db[username + "coins"] += 1
+                                                    sleep(2)
+                                                    if db[server +
+                                                          "sd"] == True:
+                                                        clear()
+                                                        typePrint(green +
+                                                              db[username + "winscreen"] +
+                                                              reset, ts)
+                                                        db[username + "coins"] += 5
+                                                        sleep(2)
+                                                        break
+                                                else:
+                                                    if db[server +
+                                                          "sd"] == False:
+                                                        clear()
+                                                        typePrint(red +
+                                                              db[db[server + "awayname"] + "losescreen"] +
+                                                              reset, ts)
+                                                        sleep(2)
+                                                        db[username +
+                                                           "playedmatches"] += 1
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "wins"] += 1
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "coins"] += 5
+                                                        break
+                                                    else:
+                                                        clear()
+                                                        typePrint(
+                                                            "Your answer was " + red + "incorrect, " + reset +
+                                                            "opponent is no longer at risk."
+                                                            + reset, ts)
+                                                        db[username +
+                                                           "playedmatches"] += 1
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "wins"] += 1
+                                                        db[db[server +
+                                                              "awayname"] +
+                                                           "coins"] += 1
+                                                        sleep(5)
+                                                        db[server +
+                                                           "sd"] = False
+                                      else:
+                                        clear()
+                                        typePrint(
+                                            red +
+                                            "The user declined your request" +
+                                            reset, mts)
+                                        sleep(2)
+                                        db[away + "play?"] 
                             else:
+                              fname = db[username + "friends"][i]
+                              canplay = False
+                              for user in db[fname + "friends"]:
+                                if username == user:
+                                  canplay = True
+                              for user in db[fname + "blockedusers"]:
+                                if username == user:
+                                  canplay = False
+                              if not canplay == True:
+                                clear()
+                                typePrint(red + "This person does not have you added" + reset, mts)
+                                sleep(2)
+                                break
+                              else:
                                 if not len(db[db[username + "friends"][i] +
                                               "requests"]) > 0:
                                     if db["s1iu"] == False:
@@ -1022,7 +1294,7 @@ while True:
                                             sleep(0.5)
                                             clear()
                                             print("Waiting for response...")
-                                            sleep(0.5)
+                                            sleep(0.5)            
                                     else:
                                         clear()
                                         typePrint(
