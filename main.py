@@ -8,8 +8,7 @@ import sys
 from datetime import datetime
 import pytz
 import random
-db["queue"] = []
-db["queuefinish"] = False
+
 tz = pytz.timezone('America/New_York')
 
 t = db # Gets rid of the green underline on line 16
@@ -52,6 +51,7 @@ if resetleaderboards == True:
 
 while True:
     clear()
+    refresh = False
     loggingin = False
     print(red + "*****************")
     print("*               *")
@@ -268,9 +268,12 @@ while True:
                                 break
                     while True:
                         clear()
+                        if refresh == True:
+                          refresh = False
+                          break
                         print(
                             "Welcome " + db[username + "namecolor"] + username + reset +
-                            "!\nVersion 7.0.0 - Added cosmetics! (Not tested ingame)\nHave a bug report? A suggestion? Add me to your friends list and message me! Username: Dylan\n\n[1] Play Online\n[2] Search Players\n[3] View Stats\n[4] Reload\n[5] Leaderboards\n[6] Friends List\n[7] Messages (" + str(len(db[username + "messages"])) + ")\n[8] Account Settings\n[9] Shop\n[10] Inventory\n[11] Quit\n\n[?] How to play"
+                            "!\nVersion 8.0.0 - Added the ability to have a random opponent\nHave a bug report? A suggestion? Add me to your friends list and message me! Username: Dylan\n\n[1] Play Online\n[2] Search Players\n[3] View Stats\n[4] Reload\n[5] Leaderboards\n[6] Friends List\n[7] Messages (" + str(len(db[username + "messages"])) + ")\n[8] Account Settings\n[9] Shop\n[10] Inventory\n[11] Quit\n\n[?] How to play"
                         )
                         i = input("")
                         if i == "20":
@@ -280,6 +283,8 @@ while True:
                                 db["s1iu"] = False
                                 db["s2iu"] = False
                                 db["s3iu"] = False
+                                db["queue"] = []
+                                db["queuefinish"]
                                 clear()
                                 print("servers reset")
                                 sleep(2)
@@ -601,7 +606,7 @@ while True:
                                 db[username + "title"] = db[username + "titles"][i - 1]
                         elif i == "?":
                           clear()
-                          print("How to play: Player 1 asks player 2 a quiz question (not like personal ex: who do you like) If player 2 gets it wrong, they are at risk, player 2 asks player 1 a question, if they get it right, the game continues, but if player 2 was at risk, player 1 wins. Both players get it wrong? game continues. Player 1 gets it wrong without player 2 being at risk? Player 2 wins.\n\n[-1] Back")
+                          print("How to play: Player 1 asks player 2 a quiz question (not a personal question) If player 2 gets it wrong, they are at risk, player 2 asks player 1 a question, if they get it right, the game continues, but if player 2 was at risk, player 1 wins. Both players get it wrong? game continues. Player 1 gets it wrong without player 2 being at risk? Player 2 wins.\n\n[-1] Back")
                           i = input("")
                           if i == "-1":
                             pass
@@ -981,20 +986,14 @@ while True:
                                     while not db["queuefinish"] == True:
                                       clear()
                                       print("Loading")
+                                    refresh = True
                                     db["queuefinish"] = False
                                     break
                                   else:
                                     leave = False
-                                    while not len(db["queue"]) > 1:
-                                      print("You are in the queue, -1 to leave")
-                                      i = input("")
-                                      if i == "-1":
-                                        db["queue"].pop(0)
-                                        leave = True
-                                        break
-                                    if leave == True:
-                                      break
-                                    else:
+                                    print("You are in the queue, wait 10 seconds and see if anyone joins")
+                                    sleep(10)
+                                    if len(db["queue"]) > 1:
                                       db[db["queue"][1] + "requests"].append(username + " " + server)
                                       away = db["queue"][1]
                                       db["queue"] = []
@@ -1226,8 +1225,14 @@ while True:
                                             red +
                                             "The user declined your request" +
                                             reset, mts)
+                                        db[away + "play?"] = None
                                         sleep(2)
-                                        db[away + "play?"] 
+                                        break
+                                    else:
+                                      clear()
+                                      typePrint(red + "No users found" + reset, mts)
+                                      sleep(2)
+                                      break
                             else:
                               fname = db[username + "friends"][i]
                               canplay = False
