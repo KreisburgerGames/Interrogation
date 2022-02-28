@@ -12,7 +12,7 @@ import random
 tz = pytz.timezone('America/New_York')
 
 t = db # Gets rid of the green underline on line 16
-database_url = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE2NDU4MjIwNjUsImlhdCI6MTY0NTcxMDQ2NSwiZGF0YWJhc2VfaWQiOiJiZGJhY2Q3OC1hYjZlLTQ1ZWYtYTdiZS0zYTBlZGY3YWJmMzgifQ.iOMFTmGHqVsfKetsVeykAQJz6BcBooa1qmWw2o8zpw_2lNTA9Q0mZUC_SsRKUkNrp11mUOckD5sLzZ12LddsEg"
+database_url = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE2NDYxMDI2ODQsImlhdCI6MTY0NTk5MTA4NCwiZGF0YWJhc2VfaWQiOiJiZGJhY2Q3OC1hYjZlLTQ1ZWYtYTdiZS0zYTBlZGY3YWJmMzgifQ.ABNjyDkCR_fMvrv4yIJJH1wL295bLVejUnE15DPF5blNkyKvOnjz72OVj8z-ZCAq4Cd0lATfcz3rfuESqW6L1Q"
 db = Database(db_url=database_url)
 
 updateurl = False
@@ -273,7 +273,7 @@ while True:
                           break
                         print(
                             "Welcome " + db[username + "namecolor"] + username + reset +
-                            "!\nVersion 8.0.0 - Added the ability to have a random opponent\nHave a bug report? A suggestion? Add me to your friends list and message me! Username: Dylan\n\n[1] Play Online\n[2] Search Players\n[3] View Stats\n[4] Reload\n[5] Leaderboards\n[6] Friends List\n[7] Messages (" + str(len(db[username + "messages"])) + ")\n[8] Account Settings\n[9] Shop\n[10] Inventory\n[11] Quit\n\n[?] How to play"
+                            "!\nVersion 8.0.1 - The random opponent feature is now out of beta!\nHave a bug report? A suggestion? Add me to your friends list and message me! Username: Dylan\n\n[1] Play Online\n[2] Search Players\n[3] View Stats\n[4] Reload\n[5] Leaderboards\n[6] Friends List\n[7] Messages (" + str(len(db[username + "messages"])) + ")\n[8] Account Settings\n[9] Shop\n[10] Inventory\n[11] Quit\n\n[?] How to play"
                         )
                         i = input("")
                         if i == "20":
@@ -516,7 +516,7 @@ while True:
                                       sleep(2)
                             elif i == "5":
                               clear()
-                              print("There is a 1 in 3 chance to double however many coins you bet, put in your bet or type -1 to go back\n" + Fore.LIGHTYELLOW_EX + str(db[username + "coins"]) + reset + "coins")
+                              print("There is a 1 in 3 chance to double however many coins you bet, put in your bet or type -1 to go back\n" + Fore.LIGHTYELLOW_EX + str(db[username + "coins"]) + reset + " coins")
                               i = int(input())
                               if i == -1:
                                 pass
@@ -959,7 +959,7 @@ while True:
                             for a in db[username + "friends"]:
                                 print("[" + str(count) + "] " + db[a + "namecolor"] + a + reset)
                                 count = count + 1
-                            typePrint("[-1] Back\n[-2] Random opponent (BETA)\n", mts)
+                            typePrint("[-1] Back\n[-2] Random opponent\n", mts)
                             i = int(input())
                             if i == -1:
                                 break
@@ -1068,7 +1068,7 @@ while True:
                                                     )
                                                     sleep(0.5)
                                                 clear()
-                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"] + reset +
+                                                typePrint(db[away + "namecolor"] + away + reset +
                                                       " said:" + "\n" +
                                                       db[server + "ar"], ts)
                                                 typePrint(
@@ -1082,9 +1082,9 @@ while True:
                                                         "Opponent is correct", ts)
                                                     db[username +
                                                        "playedmatches"] += 1
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "wins"] += 1
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "coins"] += 1
                                                     db[server + "sd"] = False
                                                     db[server + "rw"] = "away"
@@ -1098,8 +1098,7 @@ while True:
                                                            "rw"] = "home"
                                                         clear()
                                                         typePrint(db[username + "winscreen"], ts)
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "playedmatches"] += 1
                                                         db[username +
                                                            "wins"] += 1
@@ -1116,8 +1115,7 @@ while True:
                                                             "You won this round, " +
                                                             "opponent is now at risk"
                                                             + reset, ts)
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "playedmatches"] += 1
                                                         db[username +
                                                            "wins"] += 1
@@ -1143,7 +1141,7 @@ while True:
                                                     )
                                                     sleep(0.5)
                                                 clear()
-                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"]  + reset +
+                                                typePrint(db[away + "namecolor"] + away  + reset +
                                                       " asked:\n" +
                                                       db[server + "aq"] + "\n", ts)
                                                 typePrint("Type your answer\n", ts)
@@ -1171,7 +1169,7 @@ while True:
                                                     typePrint(
                                                           "Your answer was " + green + "correct." +
                                                           reset, ts)
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "playedmatches"] += 1
                                                     db[username + "wins"] += 1
                                                     db[username + "coins"] += 1
@@ -1190,16 +1188,14 @@ while True:
                                                           "sd"] == False:
                                                         clear()
                                                         typePrint(red +
-                                                              db[db[server + "awayname"] + "losescreen"] +
+                                                              db[away + "losescreen"] +
                                                               reset, ts)
                                                         sleep(2)
                                                         db[username +
                                                            "playedmatches"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "wins"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "coins"] += 5
                                                         break
                                                     else:
@@ -1210,11 +1206,9 @@ while True:
                                                             + reset, ts)
                                                         db[username +
                                                            "playedmatches"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "wins"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "coins"] += 1
                                                         sleep(5)
                                                         db[server +
@@ -1311,6 +1305,8 @@ while True:
                                         db[server +
                                            "awayname"] = db[username +
                                                             "friends"][i]
+                                        away = db[username +
+                                                            "friends"][i]
                                         db[db[username + "friends"][i] +
                                            "play?"] = None
                                         db[server + "homename"] = username
@@ -1366,7 +1362,7 @@ while True:
                                                     )
                                                     sleep(0.5)
                                                 clear()
-                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"] + reset +
+                                                typePrint(db[away + "namecolor"] + away + reset +
                                                       " said:" + "\n" +
                                                       db[server + "ar"], ts)
                                                 typePrint(
@@ -1380,9 +1376,9 @@ while True:
                                                         "Opponent is correct", ts)
                                                     db[username +
                                                        "playedmatches"] += 1
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "wins"] += 1
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "coins"] += 1
                                                     db[server + "sd"] = False
                                                     db[server + "rw"] = "away"
@@ -1396,8 +1392,7 @@ while True:
                                                            "rw"] = "home"
                                                         clear()
                                                         typePrint(db[username + "winscreen"], ts)
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "playedmatches"] += 1
                                                         db[username +
                                                            "wins"] += 1
@@ -1414,8 +1409,7 @@ while True:
                                                             "You won this round, " +
                                                             "opponent is now at risk"
                                                             + reset, ts)
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "playedmatches"] += 1
                                                         db[username +
                                                            "wins"] += 1
@@ -1441,7 +1435,7 @@ while True:
                                                     )
                                                     sleep(0.5)
                                                 clear()
-                                                typePrint(db[db[server + "awayname"] + "namecolor"] + db[server + "awayname"]  + reset +
+                                                typePrint(db[away + "namecolor"] + away  + reset +
                                                       " asked:\n" +
                                                       db[server + "aq"] + "\n", ts)
                                                 typePrint("Type your answer\n", ts)
@@ -1469,7 +1463,7 @@ while True:
                                                     typePrint(
                                                           "Your answer was " + green + "correct." +
                                                           reset, ts)
-                                                    db[db[server + "awayname"]
+                                                    db[away
                                                        + "playedmatches"] += 1
                                                     db[username + "wins"] += 1
                                                     db[username + "coins"] += 1
@@ -1488,16 +1482,14 @@ while True:
                                                           "sd"] == False:
                                                         clear()
                                                         typePrint(red +
-                                                              db[db[server + "awayname"] + "losescreen"] +
+                                                              db[away + "losescreen"] +
                                                               reset, ts)
                                                         sleep(2)
                                                         db[username +
                                                            "playedmatches"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "wins"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "coins"] += 5
                                                         break
                                                     else:
@@ -1508,11 +1500,9 @@ while True:
                                                             + reset, ts)
                                                         db[username +
                                                            "playedmatches"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "wins"] += 1
-                                                        db[db[server +
-                                                              "awayname"] +
+                                                        db[away +
                                                            "coins"] += 1
                                                         sleep(5)
                                                         db[server +
