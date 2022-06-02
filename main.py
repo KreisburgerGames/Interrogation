@@ -8,21 +8,27 @@ import sys
 from datetime import datetime
 import pytz
 import random
+import socket
+
+db["bannedusers"] = []
+
+IPAddr = socket.gethostbyname(socket.gethostname())
+
+banned = False
+for x in db["bannedips"]:
+  if IPAddr == x:
+    banned = True
 
 tz = pytz.timezone('America/New_York')
 
 t = db # Gets rid of the green underline on line 16
-database_url = "https://kv.replit.com/v0/eyJhbGciOiJIUzUxMiIsImlzcyI6ImNvbm1hbiIsImtpZCI6InByb2Q6MSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjb25tYW4iLCJleHAiOjE2NDYxMDI2ODQsImlhdCI6MTY0NTk5MTA4NCwiZGF0YWJhc2VfaWQiOiJiZGJhY2Q3OC1hYjZlLTQ1ZWYtYTdiZS0zYTBlZGY3YWJmMzgifQ.ABNjyDkCR_fMvrv4yIJJH1wL295bLVejUnE15DPF5blNkyKvOnjz72OVj8z-ZCAq4Cd0lATfcz3rfuESqW6L1Q"
-db = Database(db_url=database_url)
+database_url = open("REAL_DATABASE_URL.txt", "r")
+db = Database(db_url=database_url.read())
 
 updateurl = False
 if updateurl == True:
   print(os.getenv("REPLIT_DB_URL"))
   exit()
-
-print("If you get a big error trying to login/sign up, I need to update the db url, I will notice and do it soon")
-print("Press enter to continue")
-i = input("")
 
 red = Fore.RED
 cyan = Fore.CYAN
@@ -37,6 +43,12 @@ def typePrint(text, textSpeed):
     sys.stdout.flush()
     sleep(textSpeed)
 
+if banned == True:
+  clear()
+  typePrint(red + "You are currently banned from Interrogation, you may or may not be unbanned soon, read punishments.md for more info.\n" + reset, 0.1)
+  sleep(5)
+  exit()
+
 ts = 0.1
 mts = 0.05
 
@@ -48,6 +60,13 @@ if resetleaderboards == True:
   db["2ndplaceWLratio"] = 0
   db["3rdplacename"] = None
   db["3rdplaceWLratio"] = 0
+
+try:
+  t = db["s1iu"]
+except:
+  typePrint("The database URL needs to be updated, I don't know how to prevent this from changing every few days\n", ts)
+  sleep(3)
+  exit()
 
 while True:
     clear()
@@ -64,7 +83,11 @@ while True:
         clear()
         typePrint("What will be your username?\n", mts)
         i = input("")
-        if i in db.keys():
+        username_taken = False
+        for user in db.keys():
+          if i == user:
+            username_taken = True
+        if username_taken == True:
             clear()
             typePrint(red + "This username already exists" + reset, mts)
             sleep(2)
@@ -92,6 +115,7 @@ while True:
             db[username + "winscreens"] = ["You Won!"]
             db[username + "losescreens"] = ["You Lost!"]
             db[username + "titles"] = []
+            db[username + "ip"] = IPAddr
             db["userlist"].append(username)
             typePrint(green + "Account Created!" + reset, mts)
             sleep(2)
@@ -107,6 +131,17 @@ while True:
             typePrint("Password:\n", mts)
             i = input("")
             if i == db[username]:
+                try:
+                  t = db[username + "ip"]
+                except:
+                  db[username + "ip"] = IPAddr
+                for x in db["bannedusers"]:
+                  if x == username:
+                    clear()
+                    typePrint(red + "You are currently banned from Interrogation, you may or may not be unbanned soon, check punishments.md for more information.\n" + reset, ts)
+                    db["bannedips"].append(IPAddr)
+                    sleep(5)
+                    exit()
                 while True:
                     clear()
                     if len(db[username + "requests"]) > 0:
@@ -280,14 +315,78 @@ while True:
                             clear()
                             i = input("")
                             if i == os.environ['pass']:
-                                db["s1iu"] = False
-                                db["s2iu"] = False
-                                db["s3iu"] = False
-                                db["queue"] = []
-                                db["queuefinish"]
+                              while True:
                                 clear()
-                                print("servers reset")
-                                sleep(2)
+                                print("[1] Reset Servers\n[2] Banned Users\n[3] Banned IPs\n[4] Ban a user\n[5] Ban an IP\n\n[-1] Back")
+                                i = input("")
+                                if i == "1":
+                                  db["s1iu"] = False
+                                  db["s2iu"] = False
+                                  db["s3iu"] = False
+                                  db["queue"] = []
+                                  db["queuefinish"]
+                                  clear()
+                                  print("servers reset")
+                                  sleep(2)
+                                elif i == "2":
+                                  while True:
+                                    clear()
+                                    count = 0
+                                    for x in db["bannedusers"]:
+                                      print("[" + str(count) + "] " + x)
+                                      count += 1
+                                    print("\n[-1] Back")
+                                    i = int(input())
+                                    if i == -1:
+                                      break
+                                    else:
+                                      clear()
+                                      print(db["bannedusers"][i] + "\n\n[1] Unban\n\n[-1] Back")
+                                      x = input("")
+                                      if x == "-1":
+                                        pass
+                                      elif x == "1":
+                                        db["bannedips"].pop(i)
+                                        db["bannedusers"].pop(i)
+                                        break
+                                elif i == "3":
+                                  while True:
+                                    clear()
+                                    count = 0
+                                    for x in db["bannedips"]:
+                                      print("[" + str(count) + "] " + x)
+                                      count += 1
+                                    print("\n[-1] Back")
+                                    i = int(input())
+                                    if i == -1:
+                                      break
+                                    else:
+                                      clear()
+                                      print(db["bannedips"][i] + "\n\n[1] Unban\n\n[-1] Back")
+                                      x = input("")
+                                      if x == "-1":
+                                        pass
+                                      elif x == "1":
+                                        db["bannedips"].pop(i)
+                                        db["bannedusers"].pop(i)
+                                        break
+                                elif i == "4":
+                                  clear()
+                                  print("Which user would you like to ban? Type -1 to go back")
+                                  i = input("")
+                                  if i == -1:
+                                    pass
+                                  else:
+                                    try:
+                                      db["bannedusers"].append(db[i])
+                                      db["bannedips"].append(db[i + "ip"])
+                                      clear()
+                                      print("User banned")
+                                      sleep(3)
+                                    except:
+                                      clear()
+                                      print("User not found")
+                                      sleep(3)
                         elif i == "11":
                           clear()
                           typePrint("Bye!\n", mts)
@@ -1224,6 +1323,7 @@ while True:
                                         break
                                     else:
                                       clear()
+                                      db["queue"] = []
                                       typePrint(red + "No users found" + reset, mts)
                                       sleep(2)
                                       break
